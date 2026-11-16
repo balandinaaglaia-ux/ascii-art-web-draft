@@ -120,6 +120,10 @@ func renderPage(w http.ResponseWriter, data PageData) {
 
 func main() {
 
+	// 2 next are for letting go interact with files from the static folder
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/ascii-art", asciiHandler)
 
