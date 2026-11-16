@@ -1,10 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASCII Art Generator</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        h1 {
+            font-size: 40px;
+            color: rgb(35, 214, 178);
+        }
+
+        button {
+            background-color: rgb(18, 45, 221);
+            color: rgb(242, 237, 237);
+            font-size: 16px;
+            padding: 11px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(252, 50, 201);
+        }
+
+        pre {
+            font-family: monospace;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -18,20 +44,19 @@
         <textarea
             id="text"
             name="text"
-            rows="4"
-            cols="40"
+            rows="8"
+            cols="80"
             placeholder="Type something..."
-            required
-        ></textarea>
+            required>{{.Input}}</textarea>
 
         <br><br>
 
         <label for="banner">Choose a banner:</label>
 
         <select id="banner" name="banner">
-            <option value="standard">Standard</option>
-            <option value="shadow">Shadow</option>
-            <option value="thinkertoy">Thinkertoy</option>
+            <option value="standard" {{if eq .Banner "standard"}}selected{{end}}>Standard</option>
+            <option value="shadow" {{if eq .Banner "shadow"}}selected{{end}}>Shadow</option>
+            <option value="thinkertoy" {{if eq .Banner "thinkertoy"}}selected{{end}}>Thinkertoy</option>
         </select>
 
         <br><br>
@@ -42,9 +67,8 @@
 
     {{if .Result}}
         <h2>Your ASCII Art:</h2>
-        <pre>{{.Result}}</pre>
+        <pre id="ascii-box" class="ascii-box">{{.Result}}</pre>
     {{end}}
 
 </body>
 </html>
-

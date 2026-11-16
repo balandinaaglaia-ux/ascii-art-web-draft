@@ -9,30 +9,34 @@ import (
 )
 
 type PageData struct {
+	Input  string
+	Banner string
 	Result string
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.URL.Path != "/" {
+		http.Error(w, "Page not found", http.StatusNotFound)
+		return
+	}
 
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	renderPage(w, PageData{})
+	renderPage(w, PageData{Banner: "standard"})
 }
 
 func asciiHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Limit request size
 	r.Body = http.MaxBytesReader(w, r.Body, 10000)
 
-	// Read form data
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
@@ -42,16 +46,13 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 	input := r.FormValue("text")
 	bannerName := r.FormValue("banner")
 
-	// Check empty input
 	if input == "" {
 		http.Error(w, "Text cannot be empty", http.StatusBadRequest)
 		return
 	}
 
-	// Convert escaped newlines
 	input = convertNewLines(input)
 
-	// Validate characters
 	for _, char := range input {
 		if char != '\n' && (char < 32 || char > 126) {
 			http.Error(w, "Invalid character", http.StatusBadRequest)
@@ -59,19 +60,14 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Select banner
 	if bannerName != "standard" &&
 		bannerName != "shadow" &&
 		bannerName != "thinkertoy" {
-
 		http.Error(w, "Invalid banner", http.StatusBadRequest)
 		return
 	}
 
-	// Read banner file
-	bannerPath := "banners/" + bannerName + ".txt"
-
-	data, err := os.ReadFile(bannerPath)
+	data, err := os.ReadFile("banners/" + bannerName + ".txt")
 	if err != nil {
 		if os.IsNotExist(err) {
 			http.Error(w, "Banner not found", http.StatusNotFound)
@@ -81,19 +77,20 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	banner := string(data)
+	result, err := printAscii(input, string(data))
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 
-	// Generate ASCII art
-	result := printAscii(input, banner)
-
-	// Display result
 	renderPage(w, PageData{
+		Input:  input,
+		Banner: bannerName,
 		Result: result,
 	})
 }
 
 func renderPage(w http.ResponseWriter, data PageData) {
-
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -104,9 +101,7 @@ func renderPage(w http.ResponseWriter, data PageData) {
 		return
 	}
 
-	// Execute template into a buffer first
 	var buffer bytes.Buffer
-
 	err = tmpl.Execute(&buffer, data)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -119,6 +114,8 @@ func renderPage(w http.ResponseWriter, data PageData) {
 }
 
 func main() {
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/ascii-art", asciiHandler)
@@ -130,3 +127,5 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
+//    http://localhost:8080
