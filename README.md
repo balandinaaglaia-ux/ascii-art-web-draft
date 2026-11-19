@@ -2,7 +2,7 @@
 
 ASCII Art Web is a simple web application that allows users to generate ASCII art based on different art styles and input text. Users can select an art style and provide text, and the application will generate and display ASCII art corresponding to the chosen style.
 
-# Features
+## Features
 - You can select from different art styles: 
     1. Standard
     2. Shadow
@@ -10,27 +10,26 @@ ASCII Art Web is a simple web application that allows users to generate ASCII ar
 - You can input your own text to generate ASCII Art
 - There is a user-friendly web interface for easy interaction
 
-# Project Structure 
 
+## Project Structure
+
+```text
 ascii-art-web/
-│
 ├── banners/
 │   ├── shadow.txt
 │   ├── standard.txt
 │   └── thinkertoy.txt
-│
 ├── static/
 │   └── style.css
-│
 ├── templates/
 │   └── index.html
-│
 ├── ascii.go
 ├── go.mod
 ├── main.go
 └── README.md
+```
 
-# Directory and File description
+## Directory and File description
 
 - banners/ - Contains ASCII art banner templates
 - shadow.txt - Shadow ASCII art font
@@ -45,13 +44,13 @@ ascii-art-web/
 - go.mod - Defines the Go module
 - README.md - Project documentation and instructions
 
-# Technologies
+## Technologies
 
 - Golang
 - HTML
 - CSS
 
-# How to run
+## How to run
 
 1. Clone the repository to your local machine
 2. Install Go if you haven't already
@@ -59,14 +58,14 @@ ascii-art-web/
 4. Run `go run main.go` to start the web server
 5. Open your web browser and go to `http://localhost:8080` to access the application
 
-# Usage
+## Usage
 
 1. Open the web application in your browser
 2. Select an art style from the provided options
 3. Enter the text you want to convert to ASCII art
 4. Click the "Generate ASCII Art" button to see the generated ASCII art
 
-# Implementation Details: Algorithm
+## Implementation Details: Algorithm
 
 The application uses Go to receive user input, generate ASCII art, and display the result.
 
@@ -77,7 +76,7 @@ The application uses Go to receive user input, generate ASCII art, and display t
 - Newline Handling: The convertNewLines() and splitLines() functions handle line breaks in the input
 - Displaying the Result: The generated ASCII art is passed to the HTML template and displayed on the web page
 
-# Authors
+## Authors
 
 - Abbygail Collazo
 - Aglaia Balandina
